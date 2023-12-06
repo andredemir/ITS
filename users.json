@@ -1,0 +1,14 @@
+{
+  "andre": {
+    "password": "416f9cd7ee056996d44234d5a8af710a51e7c09844aa65ee988fe48e186a3aeb",
+    "salt": "d089f71bb07668372d61c76a7a910b18"
+  },
+  "gustav": {
+    "password": "e22d159264983aa3821f318b8d80541dc5458eae1c7fca3ef118657ae8ad3a76",
+    "salt": "430fb855b0340dbfa485776015901cba"
+  },
+  "joso": {
+    "password": "f6d336aba81de85af5b6a8100d496b6bdb53a574a2d50f64fa8e7379d2784ad56f3995fce52c8159a06e57444371c808",
+    "salt": "f4191b61dc7964ff957aec48240cc6e4"
+  }
+}
