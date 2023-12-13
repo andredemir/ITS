@@ -10,5 +10,9 @@
   "joso": {
     "password": "f6d336aba81de85af5b6a8100d496b6bdb53a574a2d50f64fa8e7379d2784ad56f3995fce52c8159a06e57444371c808",
     "salt": "f4191b61dc7964ff957aec48240cc6e4"
+  },
+  "jem": {
+    "password": "765ad53e58928d68ee7f210333ea6ee440933a99deee36abddbac7f3f3641f71",
+    "salt": "2dc10cec2424f0eb1635e1dc1585bebb"
   }
 }

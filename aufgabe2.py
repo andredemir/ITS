@@ -61,6 +61,50 @@ def register():
 
     return render_template('register.html')
 
+@app.route('/change_password', methods=['GET', 'POST'])
+# @basic_auth.required  # Erfordert Basic Authentication für diese Route
+def change_password():
+    if request.method == 'POST':
+        username = request.form['username']
+        new_password = request.form['new_password']
+        old_password = request.form['old_password']
+
+        if username in users:
+            stored_password, salt = users[username]['password'], users[username]['salt']
+            hashed_password = hashlib.sha256((old_password + salt).encode()).hexdigest()
+
+            if stored_password == hashed_password:
+                salt = os.urandom(16).hex()
+                hashed_password = hashlib.sha256((new_password + salt).encode()).hexdigest()
+
+                users[username]['password'] = hashed_password
+                users[username]['salt'] = salt
+                save_users(users)
+
+                return """
+                    <p>
+                        Passwort erfolgreich geändert
+                    </p>
+                    <p><a href="/">Zurück zur Startseite</a></p>
+                """
+            else:
+                return """
+                    <p>
+                        Passwort stimmt nicht überein mit Ihrem alten
+                    </p>
+                    <p><a href="/change_password">Nochmal versuchen</a></p>
+                """
+        else:
+            return """
+                    <p>
+                        Es gibt keinen Benutzer mit diesem Namen
+                    </p>
+                    <p><a href="/change_password">Nochmal versuchen</a></p>
+                """
+
+    return render_template('change_password.html')
+
+
 @app.route('/logout')
 def logout():
     session.pop('username', None)
