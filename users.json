@@ -14,5 +14,17 @@
   "jem": {
     "password": "765ad53e58928d68ee7f210333ea6ee440933a99deee36abddbac7f3f3641f71",
     "salt": "2dc10cec2424f0eb1635e1dc1585bebb"
+  },
+  "JohannJansen": {
+    "password": "4870d6a7cbf3cc03bbb48777740df4cc60be53d48c31975da4afdcaa059aec54",
+    "salt": "c17493b05750532550e7765c5358f55f"
+  },
+  "MericDemir": {
+    "password": "4f1bbb27debae4e9d9b1e9db0325f9aefdbcc48b11c3742f945213391ad86e00",
+    "salt": "4e526f19c09daba1cc8ceaf21204222c"
+  },
+  "jan": {
+    "password": "b0ee1961815d66b8dae696ba8fd3ec7e56b60ef015a2f217d4191c6772a10282",
+    "salt": "5b13fa0a09cc579c164a298bff9c8ea1"
   }
 }
