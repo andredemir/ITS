@@ -26,5 +26,33 @@
   "jan": {
     "password": "b0ee1961815d66b8dae696ba8fd3ec7e56b60ef015a2f217d4191c6772a10282",
     "salt": "5b13fa0a09cc579c164a298bff9c8ea1"
+  },
+  "jem2": {
+    "password": "32fd93647ddf77d79bc4a0e5c4f2940b81be299ae53cee2f7d117a3c3aa9a013",
+    "salt": "3b1d96deabcdf76e1f4573afd8644292"
+  },
+  "jem3": {
+    "password": "75ba500256a29a2da116c61848ba38da5440abc7e8c6bb8f73db17f0c3cea28f",
+    "salt": "02660551d3ebd3c41c51e5e429ae86d4"
+  },
+  "jem4": {
+    "password": "df7a0f70902cadbbc93dd08d1b17485bf60288c77d0865791b7e72dcc0b1f787",
+    "salt": "e28c80b598abd0521d72e0c488c6d9e4"
+  },
+  "jem5": {
+    "password": "7380d8e86a1f559bb88ec40c114aab07ddd95c5e5337f1f5c1d0b63bcd1bd010",
+    "salt": "af115ae866ea2fe94677d0621cfdb0f2"
+  },
+  "jem6": {
+    "password": "c8ba59959b1f76a04177bceb90abed3b304a7f0b18971d817a40871e3f0f0bdc",
+    "salt": "8ab073d08fc51111f18d22ebb4873e0d"
+  },
+  "jem7": {
+    "password": "2d41bc9d2f10dd84e1219c53e1004579ead18628b106d46659755c9512e7bdf4",
+    "salt": "218e9a9c60ec370b65085348193bfa8c"
+  },
+  "jem8": {
+    "password": "3da083c793fbe28358ba1bbf0bc31f7c270a5c2261b1f7f21882bde404d2b63b",
+    "salt": "34f41a0b05d4375a51c6fb65aa5deb07"
   }
 }

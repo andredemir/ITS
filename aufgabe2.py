@@ -1,14 +1,14 @@
-import time
-import uuid
-
-from flask import Flask, render_template, request, redirect, url_for, session
-import os
 import hashlib
 import json
+import os
+import time
+from apscheduler.schedulers.background import BackgroundScheduler
+from flask import Flask, render_template, request, redirect, url_for, session
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
 
+OTLTIMEOUTMINUTES = 10
 USERS_FILE = 'users.json'
 
 
@@ -55,12 +55,12 @@ def login():
     return render_template('login.html')
 
 
-def generate_otl_code():
-    return str(uuid.uuid4())
+def generate_otl_code(username, timestamp):
+    return hashlib.sha256((username + time.asctime(timestamp)).encode()).hexdigest()
 
 
-def set_otl_starttime(code, username, passhash, salt):
-    pendingConfirmations[code] = (username, passhash, salt, time.gmtime())
+def set_otl_starttime(code, username, passhash, salt, timestamp):
+    pendingConfirmations[code] = (username, passhash, salt, timestamp)
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -73,44 +73,44 @@ def register():
             salt = os.urandom(16).hex()
             hashed_password = hashlib.sha256((password_input + salt).encode()).hexdigest()
 
-            # users[username] = {'password': hashed_password, 'salt': salt}
-            # save_users(users)
             # open new pending Confirmation for user
-            code = generate_otl_code()
-            set_otl_starttime(code, username, hashed_password, salt)
+            timestamp = time.gmtime()
+            code = generate_otl_code(username, timestamp)
+            set_otl_starttime(code, username, hashed_password, salt, timestamp)
 
             return """
                     <p>
                         Um ihre Regestrierung abzuschließen muss folgender Link geklickt werden
                     </p>
-                    <p><a href="/confirm&{code}">Regestrierung Bestätigen</a></p>
+                    <p><a href="/confirm&code={code}">Regestrierung Bestätigen</a></p>
                 """.format(code=code)
 
     return render_template('register.html')
 
 
-@app.route('/confirm&<code>', methods=['GET'])
+@app.route('/confirm&code=<code>', methods=['GET'])
 def confirm(code):
     if code in pendingConfirmations.keys():
         confirmtuple = pendingConfirmations[code]
         username = confirmtuple[0]
         passhash = confirmtuple[1]
         salt = confirmtuple[2]
-        users[username] = {'password': passhash, 'salt': salt}
-        save_users(users)
-
-        # TODO add Timer for expiring codes
-
-        return """
-                    <p>
-                        Die Regestrierung war erfolgreich!
-                    </p>
-                """
+        timestamp = confirmtuple[3]
+        if time.gmtime().tm_min - timestamp.tm_min < OTLTIMEOUTMINUTES:
+            pendingConfirmations.pop(code)
+            users[username] = {'password': passhash, 'salt': salt}
+            save_users(users)
+            return """
+                                <p>
+                                    Die Regestrierung war erfolgreich!
+                                </p>
+                            """
     return """
-                    <p>
-                        Sie sind falsch abgebogen!
-                    </p>
-                """
+                                <p>
+                                    Der Link ist abgelaufen oder existiert nicht. Bitte regestrieren sie sich erneut.
+                                </p>
+                                <p><a href="/register">Regestrierung</a></p>
+                            """
 
 
 @app.route('/change_password', methods=['GET', 'POST'])
@@ -163,5 +163,15 @@ def logout():
     return redirect(url_for('index'))
 
 
+def check_otls():
+    for key in pendingConfirmations.keys():
+        if time.gmtime().tm_min - pendingConfirmations[key][3].tm_min > OTLTIMEOUTMINUTES:
+            pendingConfirmations.pop(key)
+
+
 if __name__ == '__main__':
+    # scheduler to manage otls
+    cron = BackgroundScheduler(daemon=True)
+    cron.add_job(check_otls, 'interval', minutes=OTLTIMEOUTMINUTES)
+    cron.start()
     app.run(debug=True)
