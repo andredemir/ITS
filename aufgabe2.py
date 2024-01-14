@@ -8,7 +8,7 @@ from flask import Flask, render_template, request, redirect, url_for, session
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
 
-OTLTIMEOUTMINUTES = 10
+OTLTIMEOUTSECONDS = 10
 USERS_FILE = 'users.json'
 
 
@@ -56,7 +56,7 @@ def login():
 
 
 def generate_otl_code(username, timestamp):
-    return hashlib.sha256((username + time.asctime(timestamp)).encode()).hexdigest()
+    return hashlib.sha256((username + str(timestamp)).encode()).hexdigest()
 
 
 def set_otl_starttime(code, username, passhash, salt, timestamp):
@@ -74,7 +74,7 @@ def register():
             hashed_password = hashlib.sha256((password_input + salt).encode()).hexdigest()
 
             # open new pending Confirmation for user
-            timestamp = time.gmtime()
+            timestamp = time.time()
             code = generate_otl_code(username, timestamp)
             set_otl_starttime(code, username, hashed_password, salt, timestamp)
 
@@ -96,7 +96,7 @@ def confirm(code):
         passhash = confirmtuple[1]
         salt = confirmtuple[2]
         timestamp = confirmtuple[3]
-        if time.gmtime().tm_min - timestamp.tm_min < OTLTIMEOUTMINUTES:
+        if round(time.time() - timestamp) < OTLTIMEOUTSECONDS:
             pendingConfirmations.pop(code)
             users[username] = {'password': passhash, 'salt': salt}
             save_users(users)
@@ -104,6 +104,7 @@ def confirm(code):
                                 <p>
                                     Die Regestrierung war erfolgreich!
                                 </p>
+                                <p><a href="/login">Login</a></p>
                             """
     return """
                                 <p>
@@ -165,13 +166,14 @@ def logout():
 
 def check_otls():
     for key in pendingConfirmations.keys():
-        if time.gmtime().tm_min - pendingConfirmations[key][3].tm_min > OTLTIMEOUTMINUTES:
+        # print("Im checking otls", time.gmtime().tm_sec)
+        if round(time.time() - pendingConfirmations[key][3]) > OTLTIMEOUTSECONDS:
             pendingConfirmations.pop(key)
 
 
 if __name__ == '__main__':
     # scheduler to manage otls
     cron = BackgroundScheduler(daemon=True)
-    cron.add_job(check_otls, 'interval', minutes=OTLTIMEOUTMINUTES)
+    cron.add_job(check_otls, 'interval', seconds=OTLTIMEOUTSECONDS)
     cron.start()
     app.run(debug=True)
