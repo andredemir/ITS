@@ -54,5 +54,9 @@
   "jem8": {
     "password": "3da083c793fbe28358ba1bbf0bc31f7c270a5c2261b1f7f21882bde404d2b63b",
     "salt": "34f41a0b05d4375a51c6fb65aa5deb07"
+  },
+  "siktir": {
+    "password": "3a63f2205ae53d3f84b08a879ba131001d1de49e00cceb30ba25cf805c10993c",
+    "salt": "6ab45315988a886a0130d534a19b40f9"
   }
 }
